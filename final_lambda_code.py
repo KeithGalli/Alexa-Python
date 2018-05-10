@@ -1,11 +1,10 @@
 """
-This is the compliment application for part 1 of my alexa series. 
-Make sure to add compliments.txt (found on the github page) to the same directory as this file
-in AWS lambda in order for this to work.
+This is a Python template for Alexa to get you building skills (conversations) quickly.
 """
 
 from __future__ import print_function
 import random
+from insults import get_insult
 
 # --------------- Helpers that build all of the responses ----------------------
 
@@ -39,9 +38,8 @@ def build_response(session_attributes, speechlet_response):
 
 # --------------- Functions that control the skill's behavior ------------------
 def get_compliment_response():
-    """ Have alexa give you a random compliment out of a list of 100. 
-        Make sure to add the compliments.txt file to same directory as this one
-        in order for this to work.
+    """ An example of a custom intent. Same structure as welcome message, just make sure to add this intent
+    in your alexa skill in order for it to work.
     """
     session_attributes = {}
     card_title = "Compliment"
@@ -54,8 +52,29 @@ def get_compliment_response():
     return build_response(session_attributes, build_speechlet_response(
         card_title, speech_output, reprompt_text, should_end_session))
 
+def get_insult_response(intent, session):
+    """ An example of a custom intent. Same structure as welcome message, just make sure to add this intent
+    in your alexa skill in order for it to work.
+    """
+    print("SESSION BELOW")
+    print(session)
+    session_attributes = {'insult_state': 1}
+    card_title = "Insult"
+    speech_output = "That's not very nice. I don't want to."
+    reprompt_text = "I would rather not do that."
+    
+    if session.get('attributes', {}) and session['attributes']['insult_state'] == 1:
+        insult = get_insult()
+        speech_output = intent['slots']['name']['value'] + " is a " + insult
+        reprompt_text = "I said he is a " + insult
+        
+    should_end_session = False
+    return build_response(session_attributes, build_speechlet_response(
+        card_title, speech_output, reprompt_text, should_end_session))
+
 def get_welcome_response():
-    """ Message that is sent right when you launch your application
+    """ If we wanted to initialize the session to have some attributes we could
+    add those here
     """
     session_attributes = {}
     card_title = "Welcome"
@@ -106,6 +125,8 @@ def on_intent(intent_request, session):
     # Dispatch to your skill's intent handlers
     if intent_name == "compliment":
         return get_compliment_response()
+    elif intent_name == "insult":
+        return get_insult_response(intent, session)
     elif intent_name == "AMAZON.HelpIntent":
         return get_welcome_response()
     elif intent_name == "AMAZON.CancelIntent" or intent_name == "AMAZON.StopIntent":
