@@ -6,7 +6,6 @@ in AWS lambda in order for this to work.
 
 from __future__ import print_function
 import random
-from insults import get_insult
 
 # --------------- Helpers that build all of the responses ----------------------
 
