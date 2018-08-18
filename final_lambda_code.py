@@ -1,5 +1,5 @@
 """
-This is a Python template for Alexa to get you building skills (conversations) quickly.
+AWS lambda code by end of part 2 of programming alexa series
 """
 
 from __future__ import print_function
